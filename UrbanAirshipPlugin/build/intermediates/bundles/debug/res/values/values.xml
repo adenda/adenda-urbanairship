@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/Users/fdoumet/Repositories/Adenda/AdendaPlugins/UrbanAirshipPlugin/res/values/colors.xml -->
+    <eat-comment/>
+    <color name="color_accent">#5AC8D0</color>
+    <color name="color_primary">#04597C</color>
+    <color name="color_primary_dark">#212121</color>
+    <color name="message_read">#22555555</color>
+    <color name="primary_text">#424242</color>
+    <!-- From: file:/Users/fdoumet/Repositories/Adenda/AdendaPlugins/UrbanAirshipPlugin/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="app_name">UrbanAirshipPlugin</string>
+    <!-- From: file:/Users/fdoumet/Repositories/Adenda/AdendaPlugins/UrbanAirshipPlugin/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="AppBaseTheme" parent="android:Theme.Light">
+        <!--
+            Theme customizations available in newer API levels can go in
+            res/values-vXX/styles.xml, while customizations related to
+            backward-compatibility can go here.
+        -->
+    </style>
+    <style name="AppTheme" parent="AppBaseTheme">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    </style>
+</resources>

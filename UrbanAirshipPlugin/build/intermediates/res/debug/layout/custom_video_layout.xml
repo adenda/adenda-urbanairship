@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <VideoView
+        android:id="@+id/customVideoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center" />
+
+    <Button
+        android:id="@+id/volume_button"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="right"
+        android:alpha="0.5" />
+
+    <ProgressBar
+        android:id="@+id/video_view_progress_bar"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+    
+</FrameLayout>
+<!-- From: file:/Users/fdoumet/Repositories/Adenda/AdendaSDKRelease/res/layout/custom_video_layout.xml --><!-- From: file:/Users/fdoumet/Repositories/Adenda/AdendaPlugins/UrbanAirshipPlugin/build/intermediates/exploded-aar/AdendaSDK/res/layout/custom_video_layout.xml -->
