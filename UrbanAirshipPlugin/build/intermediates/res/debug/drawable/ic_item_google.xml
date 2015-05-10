@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:state_enabled="true"
+        android:state_active="false"
+        android:state_focused="false"
+        android:drawable="@drawable/ic_lockscreen_google_normal"/>
+
+    <item
+        android:state_enabled="true"
+        android:state_active="true"
+        android:state_focused="false"
+        android:drawable="@drawable/ic_lockscreen_google_activated"/>
+
+    <item
+        android:state_enabled="true"
+        android:state_active="false"
+        android:state_focused="true"
+        android:drawable="@drawable/ic_lockscreen_google_focused"/>
+</selector><!-- From: file:/Users/fdoumet/Repositories/Adenda/AdendaSDKRelease/res/drawable/ic_item_google.xml --><!-- From: file:/Users/fdoumet/Repositories/Adenda/AdendaPlugins/UrbanAirshipPlugin/build/intermediates/exploded-aar/AdendaSDK/res/drawable/ic_item_google.xml -->
