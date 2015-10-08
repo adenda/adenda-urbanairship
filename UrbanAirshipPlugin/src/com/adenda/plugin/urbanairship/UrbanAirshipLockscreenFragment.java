@@ -1,10 +1,16 @@
 package com.adenda.plugin.urbanairship;
 
+import java.util.Locale;
+
+import com.urbanairship.UAirship;
 import com.urbanairship.push.PushMessage;
-import com.urbanairship.widget.LandingPageWebView;
+import com.urbanairship.push.iam.InAppMessage;
+import com.urbanairship.push.iam.ResolutionEvent;
+import com.urbanairship.widget.UAWebView;
 import com.urbanairship.widget.UAWebViewClient;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,7 +21,10 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import sdk.adenda.lockscreen.fragments.AdendaFragmentInterface;
 import sdk.adenda.widget.DateTimeFragment;
 
@@ -28,13 +37,15 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 	private static final String ADENDA_DATETIME_COLOR_PARAM = "adenda_datetime_color";
 	private static final String ADENDA_BKGRD_COLOR_PARAM = "adenda_background_color";
 	private static final String ADENDA_ACTION_URI = "adenda_action_uri";
+	private static final String ADENDA_EXPAND_CONTENT = "adenda_expand_content";
 	
-	private LandingPageWebView mWebView;
+	private UAWebView mWebView;
 	private String mNotificationUrl;
 	private int mDateTimeColor;
 	private int mBackgroundColor;
 	private String mActionUri;
 	private PushMessage mMessage;
+	private boolean mExpandWebView;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -51,6 +62,7 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 			Long bkgrndColor = getBackgroundColor(mMessage);
 			mBackgroundColor = bkgrndColor != null ? (int)bkgrndColor.longValue() : DEFAULT_BACKGROUND_COLOR;
 			mActionUri = getActionUri(mMessage);
+			mExpandWebView = getExpandWebView( mMessage);
 		}
 	}
 	
@@ -60,16 +72,27 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 		// Load layout
 		View view = inflater.inflate(R.layout.landing_page, container, false);
 		final ProgressBar progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
-		mWebView = (LandingPageWebView) view.findViewById(android.R.id.primary);
+		mWebView = (UAWebView) view.findViewById(android.R.id.primary);
 
 		// Set background color
 		View dateTimeContainer = view.findViewById(R.id.date_time_container);
-		if(dateTimeContainer != null)
-			dateTimeContainer.setBackgroundColor(mBackgroundColor);
+		dateTimeContainer.setBackgroundColor(mBackgroundColor);
 		
 		// Add date/time fragment!
 		DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, mDateTimeColor, false);
 		getChildFragmentManager().beginTransaction().replace(R.id.date_time_container, dateTimeFragment).commit();
+		
+		if ( mExpandWebView)
+		{
+			FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.ua_content_container);
+			RelativeLayout.LayoutParams layoutParams = (LayoutParams) frameLayout.getLayoutParams();
+			layoutParams.addRule(RelativeLayout.BELOW, 0);
+			layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+			frameLayout.setLayoutParams(layoutParams);
+			// Make sure date/time fragment is on top and transparent
+			dateTimeContainer.setBackgroundColor(Color.TRANSPARENT);
+			dateTimeContainer.bringToFront();
+		}
 		
 		// Load actual notification!
 		if (mNotificationUrl != null && mWebView != null && progressBar != null)
@@ -101,6 +124,13 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 	}
 	
 	@Override
+	public void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+		recordDirectOpen();
+	}
+	
+	@Override
 	public boolean expandOnRotation() {
 		// TODO Auto-generated method stub
 		return false;
@@ -119,6 +149,16 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 			return i;
 		}
 		return null;
+	}
+	
+	private void recordDirectOpen()
+	{
+		if (mMessage == null)
+			return;
+
+		ResolutionEvent resolutionEvent  = ResolutionEvent.createDirectOpenResolutionEvent(new InAppMessage.Builder().setId(mMessage.getSendId()).create());
+		if ( resolutionEvent != null)
+			UAirship.shared().getAnalytics().addEvent(resolutionEvent);		
 	}
 	
 	private Long getBackgroundColor (PushMessage message)
@@ -149,6 +189,14 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
     		return null;
     	
     	return message.getPushBundle().getString(ADENDA_ACTION_URI);
+    }
+    
+    private boolean getExpandWebView(PushMessage message)
+    {
+    	if (message == null || message.getPushBundle() == null)
+    		return false;
+    	
+    	return message.getPushBundle().getString(ADENDA_EXPAND_CONTENT).toLowerCase(Locale.US).contentEquals("true");
     }
 
 	@Override
