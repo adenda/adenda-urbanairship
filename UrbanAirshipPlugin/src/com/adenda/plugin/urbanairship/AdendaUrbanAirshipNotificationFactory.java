@@ -1,16 +1,16 @@
 package com.adenda.plugin.urbanairship;
 
+import java.util.Map;
+
 import android.app.Notification;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.urbanairship.actions.ActionValue;
 import com.urbanairship.actions.LandingPageAction;
 import com.urbanairship.push.PushMessage;
 import com.urbanairship.push.notifications.DefaultNotificationFactory;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import sdk.adenda.lockscreen.AdendaAgent;
 
@@ -41,29 +41,23 @@ public class AdendaUrbanAirshipNotificationFactory extends DefaultNotificationFa
     	{
     		String sUrl = null;
     		// Get Payload
-    		String sActionsPayload = message.getActionsPayload();
-   
-    		try {
-    			// Get actual url
-    			if (sActionsPayload != null && !sActionsPayload.isEmpty())
-    			{	
-    				JSONObject payloadJson = new JSONObject(sActionsPayload);
-					sUrl = (String) payloadJson.get(LandingPageAction.DEFAULT_REGISTRY_SHORT_NAME);
-    			}
-			} catch (JSONException e) {
-				Log.e(getClass().getSimpleName(), e.getLocalizedMessage() != null ? e.getLocalizedMessage() : "Could not get Payload!");
-				e.printStackTrace();
-			}
-
+    		Map<String, ActionValue> actions = message.getActions();
+    		ActionValue urlAction = actions.get(LandingPageAction.DEFAULT_REGISTRY_SHORT_NAME);
+    		if (urlAction != null)
+    			sUrl = urlAction.getString();
+    		else
+    			Log.e(getClass().getSimpleName(), "Could not get UA Payload!");
+    			
 			if (sUrl != null)
 			{
+				String sIdentifier = "UAID:" + message.getCanonicalPushId();
 				// We found a url!
 				Bundle args = new Bundle();
 				args.putString(UrbanAirshipLockscreenFragment.NOTIFICATION_URL, sUrl);		
 				// Add message as parameter so that we can extract other info such as text and background color
 				args.putParcelable(UrbanAirshipLockscreenFragment.UA_PUSH_MESSAGE, message);
 				// Notify Adenda to display this next
-				AdendaAgent.addCustomFragmentContent(getContext(), null, UrbanAirshipLockscreenFragment.class.getName(), args, message.getTitle(), false, true);
+				AdendaAgent.addCustomFragmentContent(getContext(), null, UrbanAirshipLockscreenFragment.class.getName(), args, sIdentifier, false, true);
 				// Flush Content so that the Urban Airship notification screen appears right away
             	AdendaAgent.flushContentCache(getContext().getApplicationContext());
 			}
