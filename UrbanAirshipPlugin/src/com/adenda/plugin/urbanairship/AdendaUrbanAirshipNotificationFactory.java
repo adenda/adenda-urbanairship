@@ -37,7 +37,7 @@ public class AdendaUrbanAirshipNotificationFactory extends DefaultNotificationFa
     	if (message.getPushBundle() != null)
     		sLockScreenParam = message.getPushBundle().getString(ADENDA_LOCKSCREEN_PARAM);
     	
-    	if ( sLockScreenParam.contentEquals("true"))
+    	if ( sLockScreenParam != null && sLockScreenParam.contentEquals("true"))
     	{
     		String sUrl = null;
     		// Get Payload
