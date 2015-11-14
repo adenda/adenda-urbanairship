@@ -196,7 +196,11 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
     	if (message == null || message.getPushBundle() == null)
     		return false;
     	
-    	return message.getPushBundle().getString(ADENDA_EXPAND_CONTENT).toLowerCase(Locale.US).contentEquals("true");
+    	String sExpandContent = message.getPushBundle().getString(ADENDA_EXPAND_CONTENT);
+    	if (sExpandContent == null)
+    		return false;
+    	
+    	return sExpandContent.toLowerCase(Locale.US).contentEquals("true");
     }
 
 	@Override
