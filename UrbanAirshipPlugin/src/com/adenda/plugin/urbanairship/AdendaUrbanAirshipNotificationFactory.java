@@ -37,8 +37,15 @@ public class AdendaUrbanAirshipNotificationFactory extends DefaultNotificationFa
     	if (message.getPushBundle() != null)
     		sLockScreenParam = message.getPushBundle().getString(ADENDA_LOCKSCREEN_PARAM);
     	
+    	// If it's an Adenda message but the user is not opted in
+    	if ( sLockScreenParam != null && sLockScreenParam.contentEquals("true") && !AdendaAgent.isOptedIn(getContext()))
+    		// Then just ignore it, but mark it as processed
+    		return null;
+    	
+    	// If it's an Adenda message and the use is opted in
     	if ( sLockScreenParam != null && sLockScreenParam.contentEquals("true"))
     	{
+    		// Start processing it
     		String sUrl = null;
     		// Get Payload
     		Map<String, ActionValue> actions = message.getActions();
