@@ -38,6 +38,7 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 	private static final String ADENDA_BKGRD_COLOR_PARAM = "adenda_background_color";
 	private static final String ADENDA_ACTION_URI = "adenda_action_uri";
 	private static final String ADENDA_EXPAND_CONTENT = "adenda_expand_content";
+	private static final String ADENDA_HIDE_DATETIME = "adenda_hide_datetime";
 	
 	private UAWebView mWebView;
 	private String mNotificationUrl;
@@ -46,6 +47,7 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 	private String mActionUri;
 	private PushMessage mMessage;
 	private boolean mExpandWebView;
+	private boolean mDisableDateTime;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -63,6 +65,7 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 			mBackgroundColor = bkgrndColor != null ? (int)bkgrndColor.longValue() : DEFAULT_BACKGROUND_COLOR;
 			mActionUri = getActionUri(mMessage);
 			mExpandWebView = getExpandWebView( mMessage);
+			mDisableDateTime = getDisableDateTime( mMessage);
 		}
 	}
 	
@@ -78,9 +81,12 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 		View dateTimeContainer = view.findViewById(R.id.date_time_container);
 		dateTimeContainer.setBackgroundColor(mBackgroundColor);
 		
-		// Add date/time fragment!
-		DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, mDateTimeColor, false);
-		getChildFragmentManager().beginTransaction().replace(R.id.date_time_container, dateTimeFragment).commit();
+		if ( !mDisableDateTime)
+		{
+			// Add date/time fragment!
+			DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, mDateTimeColor, false);
+			getChildFragmentManager().beginTransaction().replace(R.id.date_time_container, dateTimeFragment).commit();
+		}
 		
 		if ( mExpandWebView)
 		{
@@ -201,6 +207,18 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
     		return false;
     	
     	return sExpandContent.toLowerCase(Locale.US).contentEquals("true");
+    }
+    
+    private boolean getDisableDateTime(PushMessage message)
+    {
+    	if (message == null || message.getPushBundle() == null)
+    		return false;
+    	
+    	String sDisableDateTime = message.getPushBundle().getString(ADENDA_HIDE_DATETIME);
+    	if (sDisableDateTime == null)
+    		return false;
+    	
+    	return sDisableDateTime.toLowerCase(Locale.US).contentEquals("true");
     }
 
 	@Override
