@@ -84,7 +84,7 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 		if ( !mDisableDateTime)
 		{
 			// Add date/time fragment!
-			DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, mDateTimeColor, false);
+			DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, mDateTimeColor, true);
 			getChildFragmentManager().beginTransaction().replace(R.id.date_time_container, dateTimeFragment).commit();
 		}
 		
