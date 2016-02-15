@@ -23,7 +23,7 @@ public class AdendaUrbanAirshipApplication extends Application
 			public void onAirshipReady(UAirship airship) {
 				// Set the factory
                 airship.getPushManager().setNotificationFactory(factory);
-                // Setup custom lockscreen action
+                // Setup custom lock screen action
                 AdendaLockscreenAction.register();
 			}
 		});

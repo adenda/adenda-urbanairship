@@ -25,6 +25,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
+import sdk.adenda.lockscreen.AdendaAgent;
 import sdk.adenda.lockscreen.fragments.AdendaFragmentInterface;
 import sdk.adenda.widget.DateTimeFragment;
 
@@ -84,7 +85,7 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 		if ( !mDisableDateTime)
 		{
 			// Add date/time fragment!
-			DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, mDateTimeColor, true);
+			DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, mDateTimeColor, true, AdendaAgent.getEnable12hourMode(getActivity()));
 			getChildFragmentManager().beginTransaction().replace(R.id.date_time_container, dateTimeFragment).commit();
 		}
 		
