@@ -1,14 +1,5 @@
 package com.adenda.plugin.urbanairship;
 
-import java.util.Locale;
-
-import com.urbanairship.UAirship;
-import com.urbanairship.push.PushMessage;
-import com.urbanairship.push.iam.InAppMessage;
-import com.urbanairship.push.iam.ResolutionEvent;
-import com.urbanairship.widget.UAWebView;
-import com.urbanairship.widget.UAWebViewClient;
-
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -25,11 +16,20 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
-import sdk.adenda.lockscreen.AdendaAgent;
+
+import com.urbanairship.UAirship;
+import com.urbanairship.push.PushMessage;
+import com.urbanairship.push.iam.InAppMessage;
+import com.urbanairship.push.iam.ResolutionEvent;
+import com.urbanairship.widget.UAWebView;
+import com.urbanairship.widget.UAWebViewClient;
+
+import java.util.Locale;
+
 import sdk.adenda.lockscreen.fragments.AdendaFragmentInterface;
 import sdk.adenda.widget.DateTimeFragment;
 
-public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFragmentInterface 
+public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFragmentInterface
 {
 	protected static final String NOTIFICATION_URL = "notification_url";
 	protected static final String UA_PUSH_MESSAGE = "ua_push_message";
@@ -40,7 +40,7 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 	private static final String ADENDA_ACTION_URI = "adenda_action_uri";
 	private static final String ADENDA_EXPAND_CONTENT = "adenda_expand_content";
 	private static final String ADENDA_HIDE_DATETIME = "adenda_hide_datetime";
-	
+
 	private UAWebView mWebView;
 	private String mNotificationUrl;
 	private int mDateTimeColor;
@@ -49,12 +49,12 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 	private PushMessage mMessage;
 	private boolean mExpandWebView;
 	private boolean mDisableDateTime;
-	
+
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		
+
 		Bundle args = getArguments();
 		if (args != null)
 		{
@@ -69,7 +69,7 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 			mDisableDateTime = getDisableDateTime( mMessage);
 		}
 	}
-	
+
 	@Override
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -81,14 +81,14 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 		// Set background color
 		View dateTimeContainer = view.findViewById(R.id.date_time_container);
 		dateTimeContainer.setBackgroundColor(mBackgroundColor);
-		
+
 		if ( !mDisableDateTime)
 		{
 			// Add date/time fragment!
-			DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, mDateTimeColor, true, AdendaAgent.getEnable12hourMode(getActivity()));
+			DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, mDateTimeColor, true);
 			getChildFragmentManager().beginTransaction().replace(R.id.date_time_container, dateTimeFragment).commit();
 		}
-		
+
 		if ( mExpandWebView)
 		{
 			FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.ua_content_container);
@@ -100,7 +100,7 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 			dateTimeContainer.setBackgroundColor(Color.TRANSPARENT);
 			dateTimeContainer.bringToFront();
 		}
-		
+
 		// Load actual notification!
 		if (mNotificationUrl != null && mWebView != null && progressBar != null)
 		{
@@ -114,7 +114,7 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 		                progressBar.setVisibility(View.GONE);
 		            }
 		        });
-			 
+
 			 mWebView.setOnTouchListener(new OnTouchListener(){
 
 				@Override
@@ -122,21 +122,21 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 					UrbanAirshipLockscreenFragment.this.getActivity().onTouchEvent(event);
 					return false;
 				}});
-			 
+
 			 // Load URL
 			 mWebView.loadUrl(mNotificationUrl);
 		}
-		
+
 		return view;
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
 		recordDirectOpen();
 	}
-	
+
 	@Override
 	public boolean expandOnRotation() {
 		// TODO Auto-generated method stub
@@ -144,11 +144,11 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 	}
 
 	@Override
-	public Intent getActionIntent() 
+	public Intent getActionIntent()
 	{
 		// Record Urban Airship event
 		AdendaLockscreenAction.requestRun(mMessage, mActionUri);
-		
+
 		if ( mActionUri != null && !mActionUri.isEmpty())
 		{
 			Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(mActionUri));
@@ -157,7 +157,7 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 		}
 		return null;
 	}
-	
+
 	private void recordDirectOpen()
 	{
 		if (mMessage == null)
@@ -165,60 +165,60 @@ public class UrbanAirshipLockscreenFragment extends Fragment implements AdendaFr
 
 		ResolutionEvent resolutionEvent  = ResolutionEvent.createDirectOpenResolutionEvent(new InAppMessage.Builder().setId(mMessage.getSendId()).create());
 		if ( resolutionEvent != null)
-			UAirship.shared().getAnalytics().addEvent(resolutionEvent);		
+			UAirship.shared().getAnalytics().addEvent(resolutionEvent);
 	}
-	
+
 	private Long getBackgroundColor (PushMessage message)
     {
     	return getHexParam(message, ADENDA_BKGRD_COLOR_PARAM);
     }
-    
+
     private Long getDateTimeColor( PushMessage message)
     {
     	return getHexParam(message, ADENDA_DATETIME_COLOR_PARAM);
     }
-    
+
     private Long getHexParam( PushMessage message, String sParamName)
     {
     	if (message == null || message.getPushBundle() == null)
     		return null;
-    	
+
     	String sDateTimeColor = message.getPushBundle().getString( sParamName);
     	if ( sDateTimeColor == null)
     		return null;
-    	
+
     	return Long.parseLong(sDateTimeColor, 16);
     }
-    
+
     private String getActionUri(PushMessage message)
     {
     	if (message == null || message.getPushBundle() == null)
     		return null;
-    	
+
     	return message.getPushBundle().getString(ADENDA_ACTION_URI);
     }
-    
+
     private boolean getExpandWebView(PushMessage message)
     {
     	if (message == null || message.getPushBundle() == null)
     		return false;
-    	
+
     	String sExpandContent = message.getPushBundle().getString(ADENDA_EXPAND_CONTENT);
     	if (sExpandContent == null)
     		return false;
-    	
+
     	return sExpandContent.toLowerCase(Locale.US).contentEquals("true");
     }
-    
+
     private boolean getDisableDateTime(PushMessage message)
     {
     	if (message == null || message.getPushBundle() == null)
     		return false;
-    	
+
     	String sDisableDateTime = message.getPushBundle().getString(ADENDA_HIDE_DATETIME);
     	if (sDisableDateTime == null)
     		return false;
-    	
+
     	return sDisableDateTime.toLowerCase(Locale.US).contentEquals("true");
     }
 

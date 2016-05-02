@@ -8,6 +8,7 @@ public class AdendaUrbanAirshipApplication extends Application
 {
     @Override
     public void onCreate() {
+        super.onCreate();
 
     	// Urban Airship Support
 		final AdendaUrbanAirshipNotificationFactory factory = new AdendaUrbanAirshipNotificationFactory(AdendaUrbanAirshipApplication.this);
