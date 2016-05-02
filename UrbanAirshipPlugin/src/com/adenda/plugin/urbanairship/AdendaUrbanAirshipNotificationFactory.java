@@ -60,11 +60,11 @@ public class AdendaUrbanAirshipNotificationFactory extends DefaultNotificationFa
 				String sIdentifier = "UAID:" + message.getCanonicalPushId();
 				// We found a url!
 				Bundle args = new Bundle();
-				args.putString(UrbanAirshipLockscreenFragment.NOTIFICATION_URL, sUrl);		
+				args.putString(UrbanAirshipLockScreenFragment.NOTIFICATION_URL, sUrl);
 				// Add message as parameter so that we can extract other info such as text and background color
-				args.putParcelable(UrbanAirshipLockscreenFragment.UA_PUSH_MESSAGE, message);
+				args.putParcelable(UrbanAirshipLockScreenFragment.UA_PUSH_MESSAGE, message);
 				// Notify Adenda to display this next
-				AdendaAgent.addCustomFragmentContent(getContext(), null, UrbanAirshipLockscreenFragment.class.getName(), args, sIdentifier, false, true);
+				AdendaAgent.addCustomFragmentContent(getContext(), null, UrbanAirshipLockScreenFragment.class.getName(), args, sIdentifier, false, true);
 				// Flush Content so that the Urban Airship notification screen appears right away
             	AdendaAgent.flushContentCache(getContext().getApplicationContext());
 			}
