@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -18,13 +20,10 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
 import com.urbanairship.UAirship;
+import com.urbanairship.analytics.CustomEvent;
 import com.urbanairship.push.PushMessage;
-import com.urbanairship.push.iam.InAppMessage;
-import com.urbanairship.push.iam.ResolutionEvent;
 import com.urbanairship.widget.UAWebView;
 import com.urbanairship.widget.UAWebViewClient;
-
-import java.util.Locale;
 
 import sdk.adenda.lockscreen.fragments.AdendaFragmentInterface;
 import sdk.adenda.widget.DateTimeFragment;
@@ -32,22 +31,23 @@ import sdk.adenda.widget.DateTimeFragment;
 public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFragmentInterface {
     protected static final String NOTIFICATION_URL = "notification_url";
     protected static final String UA_PUSH_MESSAGE = "ua_push_message";
+
     private static final int DEFAULT_DATE_TIME_TXT_COLOR = 0xFF000000;
     private static final int DEFAULT_BACKGROUND_COLOR = 0XFFFFFFFF;
+
     private static final String ADENDA_DATETIME_COLOR_PARAM = "adenda_datetime_color";
     private static final String ADENDA_BKGRD_COLOR_PARAM = "adenda_background_color";
     private static final String ADENDA_ACTION_URI = "adenda_action_uri";
     private static final String ADENDA_EXPAND_CONTENT = "adenda_expand_content";
     private static final String ADENDA_HIDE_DATETIME = "adenda_hide_datetime";
 
-    private UAWebView mWebView;
-    private String mNotificationUrl;
-    private int mDateTimeColor;
-    private int mBackgroundColor;
-    private String mActionUri;
-    private PushMessage mMessage;
-    private boolean mExpandWebView;
-    private boolean mDisableDateTime;
+    private static final String ADENDA_OPEN_EVENT = "ADENDA_OPEN_EVENT";
+    private static final String ADENDA_DISPLAY_EVENT = "ADENDA_DISPLAY_EVENT";
+    private static final String ADENDA_ACTION_URI_EVENT_PROPERTY = "ADENDA_ACTION_URI_PROPERTY";
+
+    private String notificationUrl;
+    private PushMessage pushMessage;
+    private String actionUri;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,36 +55,36 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
 
         Bundle args = getArguments();
         if (args != null) {
-            mMessage = (PushMessage) args.getParcelable(UA_PUSH_MESSAGE);
-            mNotificationUrl = args.getString(NOTIFICATION_URL);
-            Long txtColor = getDateTimeColor(mMessage);
-            mDateTimeColor = txtColor != null ? (int) txtColor.longValue() : DEFAULT_DATE_TIME_TXT_COLOR;
-            Long bkgrndColor = getBackgroundColor(mMessage);
-            mBackgroundColor = bkgrndColor != null ? (int) bkgrndColor.longValue() : DEFAULT_BACKGROUND_COLOR;
-            mActionUri = getActionUri(mMessage);
-            mExpandWebView = getExpandWebView(mMessage);
-            mDisableDateTime = getDisableDateTime(mMessage);
+            pushMessage = args.getParcelable(UA_PUSH_MESSAGE);
+            notificationUrl = args.getString(NOTIFICATION_URL);
+            actionUri = pushMessage == null ? null : pushMessage.getPushBundle().getString(ADENDA_ACTION_URI);
         }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (pushMessage == null) {
+            return null;
+        }
+
         // Load layout
         View view = inflater.inflate(R.layout.landing_page, container, false);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
-        mWebView = (UAWebView) view.findViewById(android.R.id.primary);
+        UAWebView webView = (UAWebView) view.findViewById(android.R.id.primary);
 
         // Set background color
         View dateTimeContainer = view.findViewById(R.id.date_time_container);
-        dateTimeContainer.setBackgroundColor(mBackgroundColor);
+        dateTimeContainer.setBackgroundColor(parseColorExtra(ADENDA_BKGRD_COLOR_PARAM, DEFAULT_BACKGROUND_COLOR));
 
-        if (!mDisableDateTime) {
-            // Add date/time fragment!
-            DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, mDateTimeColor, true);
+        if (parseBooleanExtra(ADENDA_HIDE_DATETIME, false)) {
+            int dateTimeColor = parseColorExtra(ADENDA_DATETIME_COLOR_PARAM, DEFAULT_DATE_TIME_TXT_COLOR);
+
+            // Add date/time fragment
+            DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, dateTimeColor, true);
             getChildFragmentManager().beginTransaction().replace(R.id.date_time_container, dateTimeFragment).commit();
         }
 
-        if (mExpandWebView) {
+        if (!parseBooleanExtra(ADENDA_EXPAND_CONTENT, false)) {
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.ua_content_container);
             RelativeLayout.LayoutParams layoutParams = (LayoutParams) frameLayout.getLayoutParams();
             layoutParams.addRule(RelativeLayout.BELOW, 0);
@@ -96,8 +96,8 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
         }
 
         // Load actual notification!
-        if (mNotificationUrl != null && mWebView != null && progressBar != null) {
-            mWebView.setWebViewClient(new UAWebViewClient() {
+        if (notificationUrl != null && webView != null && progressBar != null) {
+            webView.setWebViewClient(new UAWebViewClient() {
                 @Override
                 public void onPageFinished(WebView view, String url) {
                     // Make sure to call through to the super's implementation
@@ -108,8 +108,7 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
                 }
             });
 
-            mWebView.setOnTouchListener(new OnTouchListener() {
-
+            webView.setOnTouchListener(new OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
                     UrbanAirshipLockScreenFragment.this.getActivity().onTouchEvent(event);
@@ -118,7 +117,7 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
             });
 
             // Load URL
-            mWebView.loadUrl(mNotificationUrl);
+            webView.loadUrl(notificationUrl);
         }
 
         return view;
@@ -127,7 +126,9 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        recordDirectOpen();
+
+        // Record display event
+        recordEvent(ADENDA_DISPLAY_EVENT);
     }
 
     @Override
@@ -138,73 +139,18 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
 
     @Override
     public Intent getActionIntent() {
-        // Record Urban Airship event
-        AdendaLockscreenAction.requestRun(mMessage, mActionUri);
+        // Record open event
+        recordEvent(ADENDA_OPEN_EVENT);
 
-        if (mActionUri != null && !mActionUri.isEmpty()) {
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(mActionUri));
+        if (!TextUtils.isEmpty(actionUri)) {
+            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(actionUri));
             i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET | Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             return i;
         }
+
         return null;
     }
 
-    private void recordDirectOpen() {
-        if (mMessage == null)
-            return;
-
-        ResolutionEvent resolutionEvent = ResolutionEvent.createDirectOpenResolutionEvent(new InAppMessage.Builder().setId(mMessage.getSendId()).create());
-        if (resolutionEvent != null)
-            UAirship.shared().getAnalytics().addEvent(resolutionEvent);
-    }
-
-    private Long getBackgroundColor(PushMessage message) {
-        return getHexParam(message, ADENDA_BKGRD_COLOR_PARAM);
-    }
-
-    private Long getDateTimeColor(PushMessage message) {
-        return getHexParam(message, ADENDA_DATETIME_COLOR_PARAM);
-    }
-
-    private Long getHexParam(PushMessage message, String sParamName) {
-        if (message == null || message.getPushBundle() == null)
-            return null;
-
-        String sDateTimeColor = message.getPushBundle().getString(sParamName);
-        if (sDateTimeColor == null)
-            return null;
-
-        return Long.parseLong(sDateTimeColor, 16);
-    }
-
-    private String getActionUri(PushMessage message) {
-        if (message == null || message.getPushBundle() == null)
-            return null;
-
-        return message.getPushBundle().getString(ADENDA_ACTION_URI);
-    }
-
-    private boolean getExpandWebView(PushMessage message) {
-        if (message == null || message.getPushBundle() == null)
-            return false;
-
-        String sExpandContent = message.getPushBundle().getString(ADENDA_EXPAND_CONTENT);
-        if (sExpandContent == null)
-            return false;
-
-        return sExpandContent.toLowerCase(Locale.US).contentEquals("true");
-    }
-
-    private boolean getDisableDateTime(PushMessage message) {
-        if (message == null || message.getPushBundle() == null)
-            return false;
-
-        String sDisableDateTime = message.getPushBundle().getString(ADENDA_HIDE_DATETIME);
-        if (sDisableDateTime == null)
-            return false;
-
-        return sDisableDateTime.toLowerCase(Locale.US).contentEquals("true");
-    }
 
     @Override
     public boolean coverEntireScreen() {
@@ -226,5 +172,56 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
     @Override
     public void onActionFollowedAndLockScreenDismissed() {
         // TODO Auto-generated method stub
+    }
+
+    /**
+     * Records a {@link CustomEvent}.
+     *
+     * @param eventName The event name.
+     */
+    private void recordEvent(@NonNull String eventName) {
+        CustomEvent.Builder builder = new CustomEvent.Builder(eventName);
+
+        if (pushMessage != null) {
+            builder.setAttribution(pushMessage);
+        }
+
+        if (!TextUtils.isEmpty(actionUri)) {
+            builder.addProperty(ADENDA_ACTION_URI_EVENT_PROPERTY, actionUri);
+        }
+
+        UAirship.shared().getAnalytics().addEvent(builder.create());
+    }
+
+    /**
+     * Parses a color from the PushMessage.
+     *
+     * @param extraName The extra's name.
+     * @param defaultValue The default value.
+     * @return The parsed color if the extra exists, otherwise the default value.
+     */
+    private int parseColorExtra(String extraName, int defaultValue) {
+        String color = pushMessage.getPushBundle().getString(extraName);
+        if (color == null) {
+            return defaultValue;
+        }
+
+        return Color.parseColor(color);
+    }
+
+    /**
+     * Parses a boolean from the PushMessage.
+     *
+     * @param extraName The extra's name.
+     * @param defaultValue The default value.
+     * @return The parsed boolean if the extra exists, otherwise the default value.
+     */
+    private boolean parseBooleanExtra(String extraName, boolean defaultValue) {
+        String boolString = pushMessage.getPushBundle().getString(extraName);
+        if (boolString == null) {
+            return defaultValue;
+        }
+
+        return Boolean.parseBoolean(boolString);
     }
 }
