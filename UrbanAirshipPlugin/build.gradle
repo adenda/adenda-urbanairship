@@ -13,13 +13,15 @@ repositories {
     flatDir {
         dirs 'libs'
     }
+
+    maven {
+        url  "https://urbanairship.bintray.com/android"
+    }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.android.gms:play-services:7.0.0'
     compile(name:'AdendaSDK', ext:'aar')
-    compile(name:'urbanairship-lib', ext:'aar')
+    compile 'com.urbanairship.android:urbanairship-sdk:7.1.+'
 }
 
 android {
