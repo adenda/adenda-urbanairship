@@ -21,7 +21,7 @@ Thumbs.db
 # generated files
 bin/
 gen/
-build/
+build
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -37,4 +37,16 @@ proguard/
 *.iml
 *.ipr
 *.iws
-.idea/
+.idea
+
+# Git
+*.orig
+*.swo
+*.swp
+
+# Gradle
+.gradle
+
+# Urban Airship
+airshipconfig.properties
+
