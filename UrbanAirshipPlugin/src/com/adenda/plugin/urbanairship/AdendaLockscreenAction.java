@@ -1,7 +1,5 @@
 package com.adenda.plugin.urbanairship;
 
-import java.util.HashMap;
-
 import android.os.Bundle;
 
 import com.urbanairship.UAirship;
@@ -9,9 +7,10 @@ import com.urbanairship.actions.Action;
 import com.urbanairship.actions.ActionArguments;
 import com.urbanairship.actions.ActionRunRequest;
 import com.urbanairship.actions.AddCustomEventAction;
-import com.urbanairship.actions.Situation;
 import com.urbanairship.analytics.CustomEvent;
 import com.urbanairship.push.PushMessage;
+
+import java.util.HashMap;
 
 public class AdendaLockscreenAction extends AddCustomEventAction {
 	
@@ -27,7 +26,7 @@ public class AdendaLockscreenAction extends AddCustomEventAction {
 		if (message != null)		
 			metadata.putParcelable(ActionArguments.PUSH_MESSAGE_METADATA, message);
 		
-		ActionRunRequest.createRequest(AdendaLockscreenAction.ACTION_NAME).setSituation(Situation.WEB_VIEW_INVOCATION).setValue(customEventData).setMetadata(metadata).run();
+		ActionRunRequest.createRequest(AdendaLockscreenAction.ACTION_NAME).setSituation(Action.SITUATION_WEB_VIEW_INVOCATION).setValue(customEventData).setMetadata(metadata).run();
 	}
 	
 	public static void register()
