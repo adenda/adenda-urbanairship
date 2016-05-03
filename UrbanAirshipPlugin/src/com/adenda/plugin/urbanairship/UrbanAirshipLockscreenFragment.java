@@ -29,6 +29,7 @@ import sdk.adenda.lockscreen.fragments.AdendaFragmentInterface;
 import sdk.adenda.widget.DateTimeFragment;
 
 public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFragmentInterface {
+
     protected static final String NOTIFICATION_URL = "notification_url";
     protected static final String UA_PUSH_MESSAGE = "ua_push_message";
 
@@ -74,17 +75,17 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
 
         // Set background color
         View dateTimeContainer = view.findViewById(R.id.date_time_container);
-        dateTimeContainer.setBackgroundColor(parseColorExtra(ADENDA_BKGRD_COLOR_PARAM, DEFAULT_BACKGROUND_COLOR));
+        dateTimeContainer.setBackgroundColor(PushUtils.parseColorExtra(pushMessage, ADENDA_BKGRD_COLOR_PARAM, DEFAULT_BACKGROUND_COLOR));
 
-        if (parseBooleanExtra(ADENDA_HIDE_DATETIME, false)) {
-            int dateTimeColor = parseColorExtra(ADENDA_DATETIME_COLOR_PARAM, DEFAULT_DATE_TIME_TXT_COLOR);
+        if (PushUtils.parseBooleanExtra(pushMessage, ADENDA_HIDE_DATETIME, false)) {
+            int dateTimeColor = PushUtils.parseColorExtra(pushMessage, ADENDA_DATETIME_COLOR_PARAM, DEFAULT_DATE_TIME_TXT_COLOR);
 
             // Add date/time fragment
             DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, dateTimeColor, true);
             getChildFragmentManager().beginTransaction().replace(R.id.date_time_container, dateTimeFragment).commit();
         }
 
-        if (!parseBooleanExtra(ADENDA_EXPAND_CONTENT, false)) {
+        if (!PushUtils.parseBooleanExtra(pushMessage, ADENDA_EXPAND_CONTENT, false)) {
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.ua_content_container);
             RelativeLayout.LayoutParams layoutParams = (LayoutParams) frameLayout.getLayoutParams();
             layoutParams.addRule(RelativeLayout.BELOW, 0);
@@ -191,37 +192,5 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
         }
 
         UAirship.shared().getAnalytics().addEvent(builder.create());
-    }
-
-    /**
-     * Parses a color from the PushMessage.
-     *
-     * @param extraName The extra's name.
-     * @param defaultValue The default value.
-     * @return The parsed color if the extra exists, otherwise the default value.
-     */
-    private int parseColorExtra(String extraName, int defaultValue) {
-        String color = pushMessage.getPushBundle().getString(extraName);
-        if (color == null) {
-            return defaultValue;
-        }
-
-        return Color.parseColor(color);
-    }
-
-    /**
-     * Parses a boolean from the PushMessage.
-     *
-     * @param extraName The extra's name.
-     * @param defaultValue The default value.
-     * @return The parsed boolean if the extra exists, otherwise the default value.
-     */
-    private boolean parseBooleanExtra(String extraName, boolean defaultValue) {
-        String boolString = pushMessage.getPushBundle().getString(extraName);
-        if (boolString == null) {
-            return defaultValue;
-        }
-
-        return Boolean.parseBoolean(boolString);
     }
 }
