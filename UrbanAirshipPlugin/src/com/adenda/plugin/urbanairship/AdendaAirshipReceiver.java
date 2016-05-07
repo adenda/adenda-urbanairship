@@ -30,7 +30,7 @@ public class AdendaAirshipReceiver extends AirshipReceiver {
         args.putParcelable(UrbanAirshipLockScreenFragment.UA_PUSH_MESSAGE, message);
 
         // Notify Adenda to display this next
-        AdendaAgent.addCustomFragmentContent(context, null, UrbanAirshipLockScreenFragment.class.getName(), args, identifier, false, true);
+        AdendaAgent.addCustomFragmentContent(context.getApplicationContext(), null, UrbanAirshipLockScreenFragment.class.getName(), args, identifier, false, true);
 
         // Flush Content so that the Urban Airship notification screen appears right away
         AdendaAgent.flushContentCache(context.getApplicationContext());

@@ -5,8 +5,7 @@
 
     <application>
 
-		<receiver android:name="com.adenda.plugin.urbanairship.AdendaAirshipReceiver"
-				  android:exported="false">
+		<receiver android:name="com.adenda.plugin.urbanairship.AdendaAirshipReceiver" android:exported="false">
 
 			<intent-filter>
 				<action android:name="com.urbanairship.push.CHANNEL_UPDATED"/>
