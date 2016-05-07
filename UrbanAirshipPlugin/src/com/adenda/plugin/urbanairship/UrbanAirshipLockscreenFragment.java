@@ -1,5 +1,7 @@
 package com.adenda.plugin.urbanairship;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -31,6 +33,7 @@ import sdk.adenda.widget.DateTimeFragment;
 public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFragmentInterface {
 
     protected static final String NOTIFICATION_URL = "notification_url";
+    protected static final String NOTIFICATION_ID = "notification_id";
     protected static final String UA_PUSH_MESSAGE = "ua_push_message";
 
     private static final int DEFAULT_DATE_TIME_TXT_COLOR = 0xFF000000;
@@ -49,6 +52,7 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
     private String notificationUrl;
     private PushMessage pushMessage;
     private String actionUri;
+    private int notificationId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +62,7 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
         if (args != null) {
             pushMessage = args.getParcelable(UA_PUSH_MESSAGE);
             notificationUrl = args.getString(NOTIFICATION_URL);
+            notificationId = args.getInt(NOTIFICATION_ID, -1);
             actionUri = pushMessage == null ? null : pushMessage.getPushBundle().getString(ADENDA_ACTION_URI);
         }
     }
@@ -130,6 +135,10 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
 
         // Record display event
         recordEvent(ADENDA_DISPLAY_EVENT);
+
+        // Dismiss notification if available
+        if (notificationId > 0)
+            ((NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE)).cancel(notificationId);
     }
 
     @Override
