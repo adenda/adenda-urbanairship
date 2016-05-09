@@ -2,6 +2,10 @@
     package="com.adenda.plugin.urbanairship"
     android:versionCode="1"
     android:versionName="1.0" >
+    
+    <uses-sdk
+        android:minSdkVersion="9"
+        android:targetSdkVersion="23" />
 
     <application android:name="com.adenda.plugin.urbanairship.AdendaApplication">
 
