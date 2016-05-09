@@ -53,6 +53,7 @@ The following extras can be used to customize the lock screen notification:
 - `adenda_background_color`: Defines the color of the lock screen background. Default is white. Format must be 8 hexadecimal characters: the first two determine the color’s alpha, while the last 6 represent the color’s hex code. e.g.: FFFFFFFF for white.
 - `adenda_datetime_color`: Defines the color of the date and time text. Default is black. Format must be 8 hexadecimal characters: the first two determine the color’s alpha, while the last 6 represent the color’s hex code. e.g.: FF000000 for black.
 - `adenda_expand_content`: Specifies whether the notification content should expand under the time and date. e.g: true
+- `adenda_flush_content` : Specifies whether to flush the next content in line and display this one right away. e.g.: true
 
 ## Customizing Take Off
 

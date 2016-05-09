@@ -14,6 +14,7 @@ import sdk.adenda.lockscreen.AdendaAgent;
 public class AdendaAirshipReceiver extends AirshipReceiver {
 
     private static final String ADENDA_LOCKSCREEN_PARAM = "adenda_lockscreen";
+    private static final String ADENDA_FLUSH_CONTENT = "adenda_flush_content";
     private static final String ADENDA_UA_NOTIF_PREFS = "adenda_ua_notif_prefs";
     private static final String ADENDA_UA_NOTIF_PREFIX = "adenda_ua_notif-";
 
@@ -64,8 +65,11 @@ public class AdendaAirshipReceiver extends AirshipReceiver {
         // Notify Adenda to display this next
         long lockScreenNotifId = AdendaAgent.addCustomFragmentContent(context.getApplicationContext(), null, UrbanAirshipLockScreenFragment.class.getName(), args, identifier, false, true);
 
-        // Flush Content so that the Urban Airship notification screen appears right away
-        AdendaAgent.flushContentCache(context.getApplicationContext());
+        if (PushUtils.parseBooleanExtra(message, ADENDA_FLUSH_CONTENT, true)) {
+            // Flush Content so that the Urban Airship notification screen appears right away
+            AdendaAgent.flushContentCache(context.getApplicationContext());
+        }
+
         return lockScreenNotifId;
     }
 }
