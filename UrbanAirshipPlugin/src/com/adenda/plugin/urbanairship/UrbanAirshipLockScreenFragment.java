@@ -1,7 +1,5 @@
 package com.adenda.plugin.urbanairship;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -87,7 +85,7 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
             int dateTimeColor = PushUtils.parseColorExtra(pushMessage, ADENDA_DATETIME_COLOR_PARAM, DEFAULT_DATE_TIME_TXT_COLOR);
 
             // Add date/time fragment
-            DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, dateTimeColor, true);
+            DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, dateTimeColor, true, false);
             getChildFragmentManager().beginTransaction().replace(R.id.date_time_container, dateTimeFragment).commit();
         }
 
