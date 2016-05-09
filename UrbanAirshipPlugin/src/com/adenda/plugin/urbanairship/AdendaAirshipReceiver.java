@@ -62,7 +62,7 @@ public class AdendaAirshipReceiver extends AirshipReceiver {
             args.putInt(UrbanAirshipLockScreenFragment.NOTIFICATION_ID, notificationId);
 
         // Notify Adenda to display this next
-        AdendaAgent.addCustomFragmentContent(context, null, UrbanAirshipLockScreenFragment.class.getName(), args, identifier, false, true);
+        AdendaAgent.addCustomFragmentContent(context.getApplicationContext(), null, UrbanAirshipLockScreenFragment.class.getName(), args, identifier, false, true);
         long lockScreenNotifId = AdendaAgent.addCustomFragmentContent(context.getApplicationContext(), null, UrbanAirshipLockScreenFragment.class.getName(), args, identifier, false, true);
 
         // Flush Content so that the Urban Airship notification screen appears right away
