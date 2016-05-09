@@ -3,7 +3,7 @@
     android:versionCode="1"
     android:versionName="1.0" >
 
-    <application>
+    <application android:name="com.adenda.plugin.urbanairship.AdendaApplication">
 
 		<receiver android:name="com.adenda.plugin.urbanairship.AdendaAirshipReceiver"
 				  android:exported="false">
