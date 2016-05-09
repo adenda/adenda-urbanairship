@@ -13,7 +13,7 @@ import sdk.adenda.lockscreen.AdendaAgent;
 
 public class AdendaAirshipReceiver extends AirshipReceiver {
 
-    private static final String ADENDA_LOCKSCREEN_PARAM = "adenda_lockscreen";
+    public static final String ADENDA_LOCKSCREEN_PARAM = "adenda_lockscreen";
 
     @Override
     protected void onPushReceived(@NonNull Context context, @NonNull PushMessage message, boolean notificationPosted) {
