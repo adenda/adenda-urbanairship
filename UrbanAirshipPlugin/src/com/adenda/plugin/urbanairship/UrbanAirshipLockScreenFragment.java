@@ -82,7 +82,7 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
         View dateTimeContainer = view.findViewById(R.id.date_time_container);
         dateTimeContainer.setBackgroundColor(PushUtils.parseColorExtra(pushMessage, ADENDA_BKGRD_COLOR_PARAM, DEFAULT_BACKGROUND_COLOR));
 
-        if (PushUtils.parseBooleanExtra(pushMessage, ADENDA_HIDE_DATETIME, false)) {
+        if (!PushUtils.parseBooleanExtra(pushMessage, ADENDA_HIDE_DATETIME, false)) {
             int dateTimeColor = PushUtils.parseColorExtra(pushMessage, ADENDA_DATETIME_COLOR_PARAM, DEFAULT_DATE_TIME_TXT_COLOR);
 
             // Add date/time fragment
@@ -90,7 +90,7 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
             getChildFragmentManager().beginTransaction().replace(R.id.date_time_container, dateTimeFragment).commit();
         }
 
-        if (!PushUtils.parseBooleanExtra(pushMessage, ADENDA_EXPAND_CONTENT, false)) {
+        if (PushUtils.parseBooleanExtra(pushMessage, ADENDA_EXPAND_CONTENT, false)) {
             FrameLayout frameLayout = (FrameLayout) view.findViewById(R.id.ua_content_container);
             RelativeLayout.LayoutParams layoutParams = (LayoutParams) frameLayout.getLayoutParams();
             layoutParams.addRule(RelativeLayout.BELOW, 0);
