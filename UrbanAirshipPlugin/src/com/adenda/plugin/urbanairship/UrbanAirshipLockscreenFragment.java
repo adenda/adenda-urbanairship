@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.TextUtils;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -137,8 +138,9 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
         recordEvent(ADENDA_DISPLAY_EVENT);
 
         // Dismiss notification if available
-        if (notificationId > 0)
-            ((NotificationManager) getActivity().getSystemService(Context.NOTIFICATION_SERVICE)).cancel(notificationId);
+        if (notificationId > 0) {
+            NotificationManagerCompat.from(getContext()).cancel(notificationId);
+        }
     }
 
     @Override
