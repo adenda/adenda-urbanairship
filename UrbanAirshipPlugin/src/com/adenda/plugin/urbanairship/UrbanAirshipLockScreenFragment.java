@@ -85,7 +85,7 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
             int dateTimeColor = PushUtils.parseColorExtra(pushMessage, ADENDA_DATETIME_COLOR_PARAM, DEFAULT_DATE_TIME_TXT_COLOR);
 
             // Add date/time fragment
-            DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, dateTimeColor, true, false);
+            DateTimeFragment dateTimeFragment = DateTimeFragment.newInstance(DateTimeFragment.TXT_CENTER_JUSTIFY, dateTimeColor, true);
             getChildFragmentManager().beginTransaction().replace(R.id.date_time_container, dateTimeFragment).commit();
         }
 
@@ -137,7 +137,7 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
 
         // Dismiss notification if available
         if (notificationId > 0) {
-            NotificationManagerCompat.from(getContext()).cancel(notificationId);
+            NotificationManagerCompat.from(getActivity()).cancel(notificationId);
         }
     }
 
