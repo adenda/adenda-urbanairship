@@ -10,13 +10,15 @@ import com.urbanairship.push.notifications.DefaultNotificationFactory;
 
 public class AdendaNotificationFactory extends DefaultNotificationFactory {
 
+    private static final String ADENDA_DISPLAY_NOTIFICATION = "adenda_display_notification";
+
     public AdendaNotificationFactory(Context context) {
         super(context);
     }
 
     @Override
     public Notification createNotification(@NonNull PushMessage message, int notificationId) {
-        if (PushUtils.parseBooleanExtra(message, AdendaAirshipReceiver.ADENDA_LOCKSCREEN_PARAM, false)) {
+        if (!PushUtils.parseBooleanExtra(message, ADENDA_DISPLAY_NOTIFICATION, true)) {
             return null;
         }
 

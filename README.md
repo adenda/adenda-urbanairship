@@ -41,9 +41,9 @@ Adenda integration for Urban Airship.
 To get started with full-page notifications, log into your Urban Airship dashboard and do the following:
 
 1) Create a new message.
-2) Add an alert, the alert will be ignored.
 3) Add a landing page action. This will be used as the full-page lock screen notification.
 4) Add the Android extra `adenda_lockscreen` with the value `true`.
+5) Add the Android extra `adenda_display_notification` with the value `true` to display the standard notification, or `false` to ignore it and only show the full-page notifications. Defaults to true.
 5) Set audience and delivery.
 6) Send the push notification.
 
