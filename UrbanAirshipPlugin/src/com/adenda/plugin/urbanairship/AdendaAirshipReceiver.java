@@ -19,34 +19,31 @@ public class AdendaAirshipReceiver extends AirshipReceiver {
 
     @Override
     protected boolean onNotificationOpened (@NonNull Context context, @NonNull AirshipReceiver.NotificationInfo notificationInfo) {
-        boolean bRetVal = super.onNotificationOpened(context, notificationInfo);
-        if (notificationInfo == null)
-            return bRetVal;
-
         // Cancel the lock screen notification since the landing page will be viewed inside the app
-        long lockScreenNotifId = context.getSharedPreferences(ADENDA_UA_NOTIF_PREFS, Context.MODE_PRIVATE).getLong(ADENDA_UA_NOTIF_PREFIX + notificationInfo.getNotificationId(), -1);
-        if (lockScreenNotifId > 0)
-        {
+        long lockScreenNotifId = context.getSharedPreferences(ADENDA_UA_NOTIF_PREFS, Context.MODE_PRIVATE)
+                .getLong(ADENDA_UA_NOTIF_PREFIX + notificationInfo.getNotificationId(), -1);
+
+        if (lockScreenNotifId > 0) {
             AdendaAgent.removeCustomContent(context.getApplicationContext(), lockScreenNotifId);
             AdendaAgent.flushContentCache(context.getApplicationContext());
         }
 
-        return bRetVal;
+        return super.onNotificationOpened(context, notificationInfo);
     }
     @Override
     protected void onNotificationPosted(@NonNull Context context, @NonNull AirshipReceiver.NotificationInfo notificationInfo) {
-        if (notificationInfo == null) return;
-
         // Post Lock Screen Notification
         long lockScreenNotifId = postLockScreenNotification(context, notificationInfo.getMessage(), notificationInfo.getNotificationId());
+
         // Save Lock Screen Notification ID in case we need to dismiss it later
         context.getSharedPreferences(ADENDA_UA_NOTIF_PREFS, Context.MODE_PRIVATE).edit().putLong(ADENDA_UA_NOTIF_PREFIX + notificationInfo.getNotificationId(), lockScreenNotifId).commit();
     }
 
     @Override
     protected void onPushReceived(@NonNull Context context, @NonNull PushMessage message, boolean notificationPosted) {
-        if (!notificationPosted)
+        if (!notificationPosted) {
             postLockScreenNotification(context, message, null);
+        }
     }
 
     private static Long postLockScreenNotification(@NonNull Context context, @NonNull PushMessage message, Integer notificationId) {
@@ -67,7 +64,7 @@ public class AdendaAirshipReceiver extends AirshipReceiver {
         // Notify Adenda to display this next
         AdendaAgent.addCustomFragmentContent(context, null, UrbanAirshipLockScreenFragment.class.getName(), args, identifier, false, true);
         long lockScreenNotifId = AdendaAgent.addCustomFragmentContent(context.getApplicationContext(), null, UrbanAirshipLockScreenFragment.class.getName(), args, identifier, false, true);
-        
+
         // Flush Content so that the Urban Airship notification screen appears right away
         AdendaAgent.flushContentCache(context.getApplicationContext());
         return lockScreenNotifId;
