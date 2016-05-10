@@ -1,6 +1,7 @@
 package com.adenda.plugin.urbanairship;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
@@ -17,6 +18,18 @@ public class AdendaAirshipReceiver extends AirshipReceiver {
     private static final String ADENDA_FLUSH_CONTENT = "adenda_flush_content";
     private static final String ADENDA_UA_NOTIF_PREFS = "adenda_ua_notif_prefs";
     private static final String ADENDA_UA_NOTIF_PREFIX = "adenda_ua_notif-";
+    private static final String ADENDA_UA_FIRST_RUN = "adenda_ua_first_run";
+
+    @Override
+    protected void onChannelRegistrationSucceeded(Context context, String channelId) {
+        SharedPreferences preferences = context.getSharedPreferences(ADENDA_UA_NOTIF_PREFS, Context.MODE_PRIVATE);
+        final boolean isFirstRun = preferences.getBoolean(ADENDA_UA_FIRST_RUN, true);
+
+        if (isFirstRun) {
+            preferences.edit().putBoolean(ADENDA_UA_FIRST_RUN, false).apply();
+            new AdendaAgent.LockScreenHelper(context, new UrbanAirshipAdendaCallback()).startLockscreen();
+        }
+    }
 
     @Override
     protected boolean onNotificationOpened (@NonNull Context context, @NonNull AirshipReceiver.NotificationInfo notificationInfo) {
