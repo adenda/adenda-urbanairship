@@ -8,12 +8,10 @@ Adenda integration for Urban Airship.
 
 2) Set the application's name as `AdendaApplication` in AndroidManifest.xml:
 
-   ```
     <application android:name=".AdendaApplication">
-   ```
+
 3) Add `airshipconfig.properties` file to your applications assets directory with your Urban Airship config:
 
-    ```
     developmentAppKey = Your Development App Key
     developmentAppSecret = Your Development App Secret
     
@@ -34,24 +32,28 @@ Adenda integration for Urban Airship.
     # Notification customization
     notificationIcon = ic_notification
     notificationAccentColor = #ff0000
-    ```
 
 ## Sending Full-Page Notifications
 
 To get started with full-page notifications, log into your Urban Airship dashboard and do the following:
 
 1) Create a new message.
+
 3) Add a landing page action. This will be used as the full-page lock screen notification.
+
 4) Add the Android extra `adenda_lockscreen` with the value `true`.
+
 5) Add the Android extra `adenda_display_notification` with the value `true` to display the standard notification, or `false` to ignore it and only show the full-page notifications. Defaults to true.
+
 5) Set audience and delivery.
+
 6) Send the push notification.
 
 The following extras can be used to customize the lock screen notification:
 
 - `adenda_action_uri`: Defines a URL or deep-link to follow when a user unlocks his device to activate the landing page action
-- `adenda_background_color`: Defines the color of the lock screen background. Default is white. Format must be 8 hexadecimal characters: the first two determine the color’s alpha, while the last 6 represent the color’s hex code. e.g.: FFFFFFFF for white.
-- `adenda_datetime_color`: Defines the color of the date and time text. Default is black. Format must be 8 hexadecimal characters: the first two determine the color’s alpha, while the last 6 represent the color’s hex code. e.g.: FF000000 for black.
+- `adenda_background_color`: Defines the color of the lock screen background. Default is white (#FFFFFF). Supported formats are: #RRGGBB #AARRGGBB.
+- `adenda_datetime_color`: Defines the color of the date and time text. Default is black (#000000). Supported formats are: #RRGGBB #AARRGGBB.
 - `adenda_expand_content`: Specifies whether the notification content should expand under the time and date. e.g: true
 - `adenda_flush_content` : Specifies whether to flush the next content in line and display this one right away. e.g.: true
 
@@ -61,8 +63,7 @@ If you need to customize Urban Airship or provide custom config options, applica
 extend  ``AdendaApplication`` and override either ``onAirshipReady`` or ``createAirshipConfig``.
 
 1) Create a custom `Application` that extends `AdendaApplication`:
-   
-   ```
+
    public class CustomApplication extends AdendaApplication {
         
         /**
@@ -89,13 +90,12 @@ extend  ``AdendaApplication`` and override either ``onAirshipReady`` or ``create
             return null;
         }
     }
-    ```
-    
+
+
 2) Then set the extended `AdendaApplication` as the application's name in AndroidManifest.xml:
 
-    ```
     <application android:name=".CustomApplication">
-    ```
+
 
 If you are unable to extend or use the `AdendaApplication` you can instead just set the `AdendaNotificationFactory`
 directly after takeOff:
@@ -108,4 +108,3 @@ directly after takeOff:
     }
 
     airship.getPushManager().setNotificationFactory(factory);
-
