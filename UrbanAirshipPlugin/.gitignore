@@ -21,6 +21,7 @@ Thumbs.db
 # generated files
 bin/
 gen/
+build
 
 # Local configuration file (sdk path, etc)
 local.properties
@@ -36,10 +37,16 @@ proguard/
 *.iml
 *.ipr
 *.iws
-.idea/
-
-# Android Studio
 .idea
-#.idea/workspace.xml - remove # and delete .idea if it better suit your needs.
+
+# Git
+*.orig
+*.swo
+*.swp
+
+# Gradle
 .gradle
-build/
+
+# Urban Airship
+airshipconfig.properties
+
