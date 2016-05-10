@@ -30,8 +30,6 @@ public class AdendaApplication extends Application {
                 AdendaApplication.this.onAirshipReady(airship, isFirstRun);
             }
         });
-        
-        UAirship.shared().getPushManager().setUserNotificationsEnabled(true);
     }
 
     /**
@@ -51,6 +49,10 @@ public class AdendaApplication extends Application {
         }
 
         airship.getPushManager().setNotificationFactory(factory);
+
+        if (isFirstRun) {
+            airship.getPushManager().setUserNotificationsEnabled(true);
+        }
     }
 
     /**
