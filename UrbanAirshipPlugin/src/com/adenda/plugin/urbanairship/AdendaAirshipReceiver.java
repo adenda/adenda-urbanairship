@@ -34,10 +34,12 @@ public class AdendaAirshipReceiver extends AirshipReceiver {
     @Override
     protected void onNotificationPosted(@NonNull Context context, @NonNull AirshipReceiver.NotificationInfo notificationInfo) {
         // Post Lock Screen Notification
-        long lockScreenNotifId = postLockScreenNotification(context, notificationInfo.getMessage(), notificationInfo.getNotificationId());
+        Long lockScreenNotifId = postLockScreenNotification(context, notificationInfo.getMessage(), notificationInfo.getNotificationId());
 
-        // Save Lock Screen Notification ID in case we need to dismiss it later
-        context.getSharedPreferences(ADENDA_UA_NOTIF_PREFS, Context.MODE_PRIVATE).edit().putLong(ADENDA_UA_NOTIF_PREFIX + notificationInfo.getNotificationId(), lockScreenNotifId).commit();
+        if (lockScreenNotifId != null) {
+            // Save Lock Screen Notification ID in case we need to dismiss it later
+            context.getSharedPreferences(ADENDA_UA_NOTIF_PREFS, Context.MODE_PRIVATE).edit().putLong(ADENDA_UA_NOTIF_PREFIX + notificationInfo.getNotificationId(), lockScreenNotifId).commit();
+        }
     }
 
     @Override
