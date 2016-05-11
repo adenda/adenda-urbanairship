@@ -33,6 +33,12 @@ Adenda integration for Urban Airship.
     notificationIcon = ic_notification
     notificationAccentColor = #ff0000
 
+4) Add your Adenda App ID and Key to AndroidManifest.xml:
+
+    <meta-data android:name="adenda_app_id" android:value="Your App ID"/>
+    <meta-data android:name="adenda_app_key" android:value="Your App Key"/>
+   Register your app with Adenda [here](https://api.adendamedia.com/publishers/register) to get these, if you haven't already. 
+  
 ## Sending Full-Page Notifications
 
 To get started with full-page notifications, log into your Urban Airship dashboard and do the following:
@@ -108,3 +114,19 @@ directly after takeOff:
     }
 
     airship.getPushManager().setNotificationFactory(factory);
+    
+## Adenda Permissions
+
+If you are building against Android Marshmallow (API 23) or later, you will likely have to request user permissions in real-time before enabling Adenda. This is best done through one of the Adenda built-in widgets: `AdendaButton`, `AdendaSwitch` or `AdendaCheckBox` which handle the required permissions for you. See the Adenda documentation for more information.
+
+If you would like to handle the opt-in process yourself, you may use the available helper functions similar to the below:
+
+    boolean bCheckPermissions = AdendaButtonHelper.checkPermissions( context);
+    if (bCheckPermissions && new AdendaAgent.LockScreenHelper(context, new UrbanAirshipAdendaCallback()).startLockscreen())
+    {
+        // Success
+    }
+The permissions that Adenda require are the following:
+- `Manifest.permission.READ_PHONE_STATE`: Required in order to handle standard lock screen events such as incoming calls
+- `Manifest.permission.WRITE_EXTERNAL_STORAGE`: Needed to save and queue lock screen content 
+- `Manifest.permission.READ_EXTERNAL_STORAGE`: Needed to read queued content and display onto lock screen
