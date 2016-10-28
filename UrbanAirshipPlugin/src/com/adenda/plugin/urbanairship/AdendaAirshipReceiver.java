@@ -21,7 +21,7 @@ public class AdendaAirshipReceiver extends AirshipReceiver {
     private static final String ADENDA_UA_FIRST_RUN = "adenda_ua_first_run";
 
     @Override
-    protected void onChannelRegistrationSucceeded(@NonNull Context context, String channelId) {
+    protected void onChannelCreated(@NonNull Context context, @NonNull String channelId) {
         SharedPreferences preferences = context.getSharedPreferences(ADENDA_UA_NOTIF_PREFS, Context.MODE_PRIVATE);
         final boolean isFirstRun = preferences.getBoolean(ADENDA_UA_FIRST_RUN, true);
 
