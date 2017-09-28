@@ -3,9 +3,10 @@ apply plugin: 'com.android.library'
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.2'
+        classpath 'com.android.tools.build:gradle:2.3.0'
     }
 }
 
@@ -20,20 +21,21 @@ repositories {
 }
 
 dependencies {
-    compile(name:'AdendaSDK', ext:'aar')
     //compile project(':AdendaSDK')
-    compile 'com.google.code.gson:gson:2.4'
-    compile 'com.urbanairship.android:urbanairship-sdk:8.0.3'
+    compile(name: 'AdendaSDK', ext: 'aar')
+    compile 'com.google.code.gson:gson:2.7'
+    compile 'com.urbanairship.android:urbanairship-sdk:8.4.0'
+    compile 'com.google.android.gms:play-services-gcm:11.0.4'
 }
 
 android {
     compileSdkVersion 24
-    buildToolsVersion '23.0.3'
+    buildToolsVersion '25.0.3'
     enforceUniquePackageName = false
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 24
+        targetSdkVersion 25
     }
 
     compileOptions {
