@@ -76,7 +76,7 @@ public class UrbanAirshipLockScreenFragment extends Fragment implements AdendaFr
         // Load layout
         View view = inflater.inflate(R.layout.landing_page, container, false);
         final ProgressBar progressBar = (ProgressBar) view.findViewById(android.R.id.progress);
-        UAWebView webView = (UAWebView) view.findViewById(android.R.id.primary);
+        WebView webView = (WebView) view.findViewById(android.R.id.primary);
 
         // Set background color
         View dateTimeContainer = view.findViewById(R.id.date_time_container);

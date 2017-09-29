@@ -49,10 +49,7 @@ public class AdendaApplication extends Application {
         }
 
         airship.getPushManager().setNotificationFactory(factory);
-
-        if (isFirstRun) {
-            airship.getPushManager().setUserNotificationsEnabled(true);
-        }
+        airship.getPushManager().setUserNotificationsEnabled(true);
     }
 
     /**
