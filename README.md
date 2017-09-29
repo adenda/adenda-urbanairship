@@ -12,6 +12,7 @@ Adenda integration for Urban Airship.
 
 3) Add `airshipconfig.properties` file to your applications assets directory with your Urban Airship config:
 
+    ```
     developmentAppKey = Your Development App Key
     developmentAppSecret = Your Development App Secret
     
@@ -32,6 +33,7 @@ Adenda integration for Urban Airship.
     \# Notification customization
     notificationIcon = ic_notification
     notificationAccentColor = #ff0000
+    ```
 
 4) Add your Adenda App ID and Key to AndroidManifest.xml:
 
