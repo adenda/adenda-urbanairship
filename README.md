@@ -19,18 +19,18 @@ Adenda integration for Urban Airship.
     productionAppKey = Your Production App Key
     productionAppSecret = Your Production Secret
     
-    \# Toggles between the development and production app credentials
-    \# Before submitting your application to an app store set to true
+    # Toggles between the development and production app credentials
+    # Before submitting your application to an app store set to true
     inProduction = false
     
-    \# LogLevel is "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR" or "ASSERT"
+    # LogLevel is "VERBOSE", "DEBUG", "INFO", "WARN", "ERROR" or "ASSERT"
     developmentLogLevel = DEBUG
     productionLogLevel = ERROR
     
-    \# GCM Sender ID
+    # GCM Sender ID
     gcmSender = Your Google API Project Number
     
-    \# Notification customization
+    # Notification customization
     notificationIcon = ic_notification
     notificationAccentColor = #ff0000
     ```
