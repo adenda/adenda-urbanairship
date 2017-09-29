@@ -10,7 +10,7 @@ Adenda integration for Urban Airship.
 
     `<application android:name=".AdendaApplication">`
 
-3) Add `airshipconfig.properties` file to your applications assets directory with your Urban Airship config:
+3) Add `airshipconfig.properties` file to your application's assets directory with your Urban Airship config:
 
     ```
     developmentAppKey = Your Development App Key
