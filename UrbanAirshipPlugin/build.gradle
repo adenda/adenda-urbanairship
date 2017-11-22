@@ -6,7 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
     }
 }
 
@@ -18,24 +18,30 @@ repositories {
     maven {
         url  "https://urbanairship.bintray.com/android"
     }
+    maven {
+        url "https://maven.google.com"
+    }
 }
 
 dependencies {
+    debugImplementation project(':AdendaSDK')
+    releaseImplementation project(':AdendaSDKRelease')
+    //compile(name: 'AdendaSDK', ext: 'aar')
     //compile project(':AdendaSDK')
-    compile(name: 'AdendaSDK', ext: 'aar')
-    compile 'com.google.code.gson:gson:2.7'
-    compile 'com.urbanairship.android:urbanairship-sdk:8.4.0'
-    compile 'com.google.android.gms:play-services-gcm:11.0.4'
+    implementation 'com.google.code.gson:gson:2.8.0'
+    implementation 'com.urbanairship.android:urbanairship-sdk:8.9.6'
+    implementation 'com.google.android.gms:play-services-gcm:11.6.0'
 }
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '25.0.3'
-    enforceUniquePackageName = false
+    compileSdkVersion 27
+    buildToolsVersion '27.0.1'
+
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 25
+        targetSdkVersion 27
+        missingDimensionStrategy 'platform', 'nativeAndroid'
     }
 
     compileOptions {

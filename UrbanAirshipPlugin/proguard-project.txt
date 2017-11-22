@@ -154,6 +154,23 @@
 # -keep public interface mypackage.MyInterface
 # -keep public class * implements mypackage.MyInterface
 
+##---------------Begin: proguard configuration for Urban Airship  ----------
+## Parcelable
+-keepclassmembers class * implements android.os.Parcelable {
+  public static final android.os.Parcelable$Creator CREATOR;
+}
+
+## Required even for GCM only apps
+-dontwarn com.amazon.device.messaging.**
+
+## Autopilot
+-keep public class * extends com.urbanairship.Autopilot
+
+## Actions
+-keep public class * extends com.urbanairship.actions.Action
+-keep public class * implements com.urbanairship.actions.ActionRegistry$Predicate
+##---------------End: proguard configuration for Urban Airship  ----------
+
 ##---------------Begin: proguard configuration for UrbanAirshipPlugin  ----------
 -keepattributes Exceptions,InnerClasses,Deprecated,EnclosingMethod
 -keep public class com.adenda.plugin.urbanairship.AdendaAirshipReceiver {public *; protected *;}
